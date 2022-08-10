@@ -164,10 +164,10 @@ def get_args_parser():
 #    #print("Loaded tensor:",x.shape)
 #    return x
 
-def myloader(file_name):
+def myloader(file_name,transform):
     #print("in my loader",file_name)
     #x = np.load(file_name).squeeze(axis=0)
-    url = 'http://127.0.0.1:5000/search?name=' + file_name
+    url = 'http://127.0.0.1:5000/search?name=' + file_name + "&transform=" + transform #2 - finetune - also transforms. 
     #print(url)
     resp = req.get(url)
     #print(resp.text)
@@ -176,6 +176,12 @@ def myloader(file_name):
     os.remove(resp.text)
     #print("Loaded tensor:",x.shape)
     return x 
+
+def myloader_train(file_name):
+    return myloader(file_name,"2") #2 - resize and random flip etc
+
+def myloader_eval(file_name):
+    return myloader(file_name,"3") #eval -3 - just resize. no other transform
 
 def my_is_valid_file(file_name):
     extension = file_name.split(".")[-1] 
@@ -202,8 +208,8 @@ def main(args):
 
     #dataset_train = build_dataset(is_train=True, args=args)
     #dataset_val = build_dataset(is_train=False, args=args)
-    dataset_train = datasets.ImageFolder(os.path.join(args.data_path, 'train'), loader = myloader,is_valid_file = my_is_valid_file)
-    dataset_val = datasets.ImageFolder(os.path.join(args.data_path, 'val'), loader = myloader,is_valid_file = my_is_valid_file)
+    dataset_train = datasets.ImageFolder(os.path.join(args.data_path, 'train'), loader = myloader_train,is_valid_file = my_is_valid_file)
+    dataset_val = datasets.ImageFolder(os.path.join(args.data_path, 'val'), loader = myloader_eval,is_valid_file = my_is_valid_file)
 
     if True:  # args.distributed:
         num_tasks = misc.get_world_size()

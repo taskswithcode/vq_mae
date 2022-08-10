@@ -155,7 +155,7 @@ def loc_convert(file_name):
 def myloader(file_name):
     #print("in my loader",file_name)
     #x = np.load(file_name).squeeze(axis=0)
-    url = 'http://127.0.0.1:5000/search?name=' + file_name
+    url = 'http://127.0.0.1:5000/search?name=' + file_name + "&transform=1" #1 - pretrian
     #print(url)
     resp = req.get(url)
     #print(resp.text)

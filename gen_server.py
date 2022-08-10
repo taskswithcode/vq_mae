@@ -21,9 +21,10 @@ def hello():
         device,model = gen.load_model()
     args = request.args
     name = args.get('name')
+    transform_type = int(args.get('transform'))
     output_file = "generated/" + ".".join(name.split("/")[-1].split(".")[:-1]) + ".npy"
     if (counter % 10 == 0):
         print("{:,}".format(counter), "]", "file name in flask",output_file,file=sys.stderr)
     counter += 1
-    gen.loc_convert(device,model,name,output_file)
+    gen.loc_convert(device,model,name,output_file,transform_type)
     return output_file
